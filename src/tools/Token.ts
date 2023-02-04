@@ -15,15 +15,41 @@ export class TokenService{
         });
     }
     
-    static async generateTokens(userId: string | number, jti: string){
+    static async generateTokens(userId: string, jti: string){
         const accessToken = await this.generateAccessToken(userId);
         const refreshToken = await this.generateRefreshToken(userId, jti);
+
+
+        await this.addTokenToWhiteList(userId, refreshToken);
     
         return {
             accessToken,
             refreshToken,
         };
     }
+
+    static async addTokenToWhiteList(userId: string, newToken: string){
+        const foundedUser = await prismaClient.user.findUnique({
+            where: {
+                id: userId
+            }
+        });
+
+        if (foundedUser){
+            await prismaClient.user.update({
+                where: {
+                    id: userId
+                },
+                data: {
+                    tokens: [...foundedUser.tokens, newToken]
+                }
+            });
+        }
+        else{
+            return new Error("User not found");
+        }
+    }
+
     static async verifyAccessToken(token: string){
         try{
             const payload = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
@@ -42,9 +68,5 @@ export class TokenService{
         catch(error){
             throw new Error("Token is not valid");
         }
-    }
-    
-    static async addUserToken(){
-    
     }
 }

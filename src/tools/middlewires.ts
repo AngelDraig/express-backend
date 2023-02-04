@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 import { TokenService } from "./Token";
+import Logger from "./Logger";
 
 import { CustomRequestInt } from "./Interfaces";
 
@@ -38,5 +39,10 @@ export default class Middlewires{
             message: error.message,
             stack: error.stack
         });
+    }
+
+    static async logEvents(req: Request, res: Response, next: NextFunction){
+        await Logger.log({method: req.method, url: req.url, host: req.hostname});
+        return next();
     }
 }

@@ -8,5 +8,6 @@ const loginRouter = express.Router();
 
 loginRouter.post(API_PATH + "/login", LoginController.login);
 loginRouter.get(API_PATH + "/logout", LoginController.logout);
+loginRouter.post(API_PATH + "/refresh", LoginController.refresh);
 
 export default loginRouter;

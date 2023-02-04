@@ -9,6 +9,6 @@ const userRouter = express.Router();
 
 userRouter.post(API_PATH + "/user", UserController.create);
 userRouter.get(API_PATH + "/user/me", Middlewires.isAuthenticated, UserController.me);
-userRouter.get(API_PATH + "/users", Middlewires.isAuthenticated, UserController.findAll);
+userRouter.get(API_PATH + "/users", UserController.findAll);
 
 export default userRouter;

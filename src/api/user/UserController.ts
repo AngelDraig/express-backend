@@ -40,11 +40,11 @@ export default class UserController{
 
     static async findAll(req: CustomRequestInt, res: Response, next: NextFunction){
         try{
-            const { userId } = req.payload;
+            // const { userId } = req.payload;
 
-            if (!userId){
-                throw new Error("User not found");
-            }
+            // if (!userId){
+            //     throw new Error("User not found");
+            // }
 
             const users = await UserService.findAll();
             res.json(users);
