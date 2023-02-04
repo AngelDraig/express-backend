@@ -4,9 +4,11 @@ const cookieParser = require('cookie-parser');
 const { v4: uuidv4 } = require('uuid');
 import dotenv from 'dotenv';
 import { rateLimit } from 'express-rate-limit';
+import { engine } from 'express-handlebars';
 
 import userRouter from './src/api/user/UserRouter';
 import loginRouter from './src/api/login/LoginRouter';
+import adminRouter from './src/admin/AdminRouter';
 import Middlewires from './src/tools/middlewires';
 
 import { REQUEST_SECOND_LIMIT } from './src/config';
@@ -23,7 +25,9 @@ const limiter = rateLimit({
 	keyGenerator: (request, response) => request.ip,
 });
 
-
+app.engine('handlebars', engine());
+app.set('view engine', 'handlebars');
+app.set('views', './src/views');
 
 app.use(express.json());
 app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
@@ -33,9 +37,10 @@ app.use(Middlewires.logEvents);
 app.use(limiter);
 
 app.get('/', (req: Request, res: Response) => {
-  	res.send('Server');
+	res.send("Server");
 });
 
+app.use(adminRouter);
 app.use(userRouter);
 app.use(loginRouter);
 
